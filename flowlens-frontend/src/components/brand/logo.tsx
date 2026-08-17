@@ -30,7 +30,7 @@ function LogoMark({ className }: { className?: string }) {
         fill="none"
       />
       {/* Endpoint node — where "flow" resolves, echoed in the Friction Gauge's needle hub */}
-      <circle cx="29" cy="5.5" r="2.25" fill="hsl(var(--secondary))" />
+      <circle cx="29" cy="5.5" r="2.25" fill="hsl(var(--coral))" />
     </svg>
   );
 }

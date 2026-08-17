@@ -116,20 +116,16 @@ export function DashboardPage() {
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
-        className="relative overflow-hidden rounded-2xl border border-border bg-card p-6 shadow-sm md:p-8"
+        className="relative overflow-hidden rounded-2xl border border-border bg-butter p-6 shadow-sm md:p-8"
       >
-        {/* Decorative background */}
-        <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-primary/5 blur-3xl" />
-        <div className="pointer-events-none absolute -bottom-20 -left-20 h-64 w-64 rounded-full bg-secondary/5 blur-3xl" />
-
         <div className="relative grid gap-8 lg:grid-cols-[auto_1fr] lg:items-center">
           {/* Greeting + gauge */}
           <div className="flex flex-col items-center gap-4 lg:flex-row lg:gap-8">
             <div>
-              <h2 className="font-display text-2xl font-bold tracking-tight">
-                {greeting()}, <span className="text-gradient">{user?.displayName?.split(' ')[0] ?? 'there'}</span>
+              <h2 className="font-display text-2xl font-bold tracking-tight text-butter-foreground">
+                {greeting()}, <span className="text-primary">{user?.displayName?.split(' ')[0] ?? 'there'}</span>
               </h2>
-              <p className="mt-1 text-sm text-muted-foreground">
+              <p className="mt-1 text-sm text-butter-foreground/70">
                 {stats.avgFrictionScore === null
                   ? 'Log your first frustration to start uncovering patterns.'
                   : stats.avgFrictionScore >= 70
@@ -146,12 +142,12 @@ export function DashboardPage() {
 
           {/* Key insights */}
           <div className="grid gap-3 sm:grid-cols-2">
-            <div className="rounded-xl border border-border/60 bg-background/50 p-4">
+            <div className="rounded-xl border border-border/60 bg-card p-4">
               <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Time lost</p>
               <p className="mt-1 font-mono text-2xl font-bold">{formatMinutes(stats.totalMinutesLost)}</p>
               <p className="mt-0.5 text-xs text-muted-foreground">across {stats.sampleSize} logged frustrations</p>
             </div>
-            <div className="rounded-xl border border-border/60 bg-background/50 p-4">
+            <div className="rounded-xl border border-border/60 bg-card p-4">
               <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Preventability</p>
               <p className="mt-1 font-mono text-2xl font-bold">
                 {stats.avgPreventability !== null ? `${stats.avgPreventability.toFixed(0)}%` : '—'}

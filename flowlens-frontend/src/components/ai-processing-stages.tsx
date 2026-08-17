@@ -34,8 +34,8 @@ export function AIProcessingStages({ queued }: { queued: boolean }) {
     <div className="flex flex-col items-center gap-4 rounded-xl border border-dashed border-border bg-background/50 py-12 text-center">
       <div className="relative flex h-14 w-14 items-center justify-center">
         <motion.div
-          className="absolute inset-0 rounded-full ai-gradient-bg"
-          animate={reduce ? { opacity: 0.8 } : { scale: [1, 1.15, 1], opacity: [0.6, 1, 0.6] }}
+          className="absolute inset-0 rounded-full bg-peach"
+          animate={reduce ? { opacity: 0.8 } : { scale: [1, 1.15, 1], opacity: [0.5, 0.9, 0.5] }}
           transition={reduce ? undefined : { duration: 2, repeat: Infinity, ease: 'easeInOut' }}
         />
         <div className="relative flex h-10 w-10 items-center justify-center rounded-full bg-card shadow-sm">

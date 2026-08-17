@@ -16,13 +16,8 @@ export function EmptyState({
 }) {
   return (
     <div className="relative flex flex-col items-center justify-center overflow-hidden rounded-xl border border-dashed border-border bg-card/50 py-16 text-center">
-      {/* Decorative floating orbs */}
-      <div className="pointer-events-none absolute -left-8 -top-8 h-24 w-24 rounded-full bg-primary/5 blur-2xl" />
-      <div className="pointer-events-none absolute -bottom-8 -right-8 h-24 w-24 rounded-full bg-secondary/5 blur-2xl" />
-      <div className="animate-float">
-        <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-xl border border-border bg-card shadow-md">
-          <Icon className="h-6 w-6 text-muted-foreground" />
-        </div>
+      <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-butter text-butter-foreground">
+        <Icon className="h-6 w-6" />
       </div>
       <h3 className="text-sm font-semibold">{title}</h3>
       {description && <p className="mt-1 max-w-sm text-sm text-muted-foreground">{description}</p>}
