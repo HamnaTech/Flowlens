@@ -1,0 +1,697 @@
+// ============================================================================
+// FlowLens AI — Prisma Schema
+// PostgreSQL 15+. Requires the pgvector extension to be installed on the
+// server (not just declared here) for FrustrationLog.embedding to work —
+// see the note on that field for what "installed" actually means.
+// ============================================================================
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
+}
+
+datasource db {
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+  // "vector" is the real Postgres extension name pgvector registers itself
+  // under (confirmed via CREATE EXTENSION vector — not "pgvector"). This
+  // tells Prisma Migrate to emit `CREATE EXTENSION IF NOT EXISTS "vector";`
+  // automatically in generated migrations. Declaring this does NOT install
+  // the extension on the server — it only tells Prisma to activate it in
+  // this database if the server already has it available.
+  extensions = [vector]
+}
+
+// ============================================================================
+// ENUMS
+// ============================================================================
+
+// ============================================================================
+// ENUMS
+// ============================================================================
+
+// Platform-level role. Separate from OrgRole because a user's platform
+// permissions (e.g. accessing internal admin tooling) are independent of
+// what role they hold inside any given organization.
+enum PlatformRole {
+  USER
+  ADMIN
+}
+
+// Role within a specific Organization. A single User can hold different
+// OrgRoles across different Organizations (e.g. OWNER of their own team,
+// MEMBER of a client's team), which is why this lives on the join table
+// (OrganizationMember) rather than on User directly.
+enum OrgRole {
+  OWNER
+  ADMIN
+  MEMBER
+}
+
+enum LogSource {
+  TEXT
+  VOICE
+  SCREENSHOT
+  SCREEN_RECORDING
+}
+
+enum ReportPeriod {
+  DAILY
+  WEEKLY
+  MONTHLY
+}
+
+enum ReportStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+enum NotificationType {
+  WEEKLY_REPORT_READY
+  BURNOUT_RISK_ALERT
+  RECURRING_PATTERN_DETECTED
+  TEAM_INVITE
+  SUBSCRIPTION_EXPIRING
+  COMMENT_MENTION
+  SYSTEM
+}
+
+enum NotificationChannel {
+  IN_APP
+  EMAIL
+  PUSH
+}
+
+enum IntegrationProvider {
+  SLACK
+  MICROSOFT_TEAMS
+  GOOGLE_CALENDAR
+  GMAIL
+  NOTION
+  GITHUB
+}
+
+enum IntegrationStatus {
+  CONNECTED
+  DISCONNECTED
+  ERROR
+  TOKEN_EXPIRED
+}
+
+enum ActivityAction {
+  LOG_CREATED
+  LOG_UPDATED
+  LOG_DELETED
+  REPORT_GENERATED
+  MEMBER_INVITED
+  MEMBER_REMOVED
+  ROLE_CHANGED
+  SUBSCRIPTION_CHANGED
+  INTEGRATION_CONNECTED
+  INTEGRATION_DISCONNECTED
+  LOGIN
+  LOGIN_FAILED
+}
+
+enum PlanTier {
+  FREE
+  PRO
+  TEAM
+  ENTERPRISE
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  TRIALING
+  PAST_DUE
+  CANCELED
+  EXPIRED
+}
+
+enum InvoiceStatus {
+  PAID
+  OPEN
+  VOID
+  UNCOLLECTIBLE
+}
+
+enum AttachmentKind {
+  IMAGE
+  AUDIO
+  VIDEO
+  DOCUMENT
+}
+
+enum AttachmentStatus {
+  UPLOADING
+  PROCESSING
+  READY
+  FAILED
+}
+
+// ============================================================================
+// CORE IDENTITY
+// ============================================================================
+
+// The root identity record. Kept intentionally slim — profile, auth, and
+// billing concerns are split into related tables so this table stays cheap
+// to read on every authenticated request (it's fetched via JWT sub on
+// nearly every API call).
+model User {
+  id                String   @id @default(uuid())
+  email             String   @unique
+  emailVerifiedAt   DateTime?
+  passwordHash      String? // null for OAuth-only accounts
+  displayName       String
+  avatarUrl         String?
+  timezone          String   @default("UTC")
+  platformRole      PlatformRole @default(USER)
+  onboardingStep    Int      @default(0) // drives onboarding wizard resumption
+  isActive          Boolean  @default(true)
+  lastLoginAt       DateTime?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  // Auth
+  oauthAccounts     OAuthAccount[]
+  refreshTokens     RefreshToken[]
+
+  // Personal productivity data
+  frustrationLogs   FrustrationLog[]
+  categories        Category[]        // user-created custom categories
+  aiReports         AIReport[]
+  notifications     Notification[]
+  activityLogs      ActivityLog[]
+  comments          Comment[]
+  apiKeys           ApiKey[]
+
+  // Org membership (many-to-many via join table, see OrganizationMember)
+  organizationMemberships OrganizationMember[]
+  ownedOrganizations      Organization[]        @relation("OrganizationOwner")
+
+  // Billing — a personal (non-org) subscription lives here; org subscriptions
+  // live on Organization instead. See Subscription.ownerType.
+  subscriptions     Subscription[]
+
+  @@index([email])
+  @@index([platformRole])
+}
+
+// Supports Google/GitHub OAuth login. Separate table (not fields on User)
+// because a single User may eventually link multiple providers.
+model OAuthAccount {
+  id                String   @id @default(uuid())
+  userId            String
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  provider          String   // "google" | "github"
+  providerAccountId String
+  accessToken       String?
+  refreshToken      String?
+  expiresAt         DateTime?
+  createdAt         DateTime @default(now())
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+// Refresh tokens are stored (hashed) and rotated on every use so we can
+// revoke a compromised session without invalidating every device. This is
+// what "logout everywhere" and admin-forced logout are built on.
+model RefreshToken {
+  id          String   @id @default(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash   String   @unique
+  userAgent   String?
+  ipAddress   String?
+  isRevoked   Boolean  @default(false)
+  expiresAt   DateTime
+  createdAt   DateTime @default(now())
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+// Single-use, short-lived tokens for the email verification flow. Kept
+// separate from User (rather than a verificationToken column) so multiple
+// outstanding tokens can be invalidated at once and so expired/used tokens
+// leave an audit trail instead of being silently overwritten.
+model EmailVerificationToken {
+  id         String   @id @default(uuid())
+  userId     String
+  tokenHash  String   @unique
+  expiresAt  DateTime
+  usedAt     DateTime?
+  createdAt  DateTime @default(now())
+
+  @@index([userId])
+}
+
+// Same rationale as EmailVerificationToken. Tokens are single-use and
+// short-lived (1 hour); requesting a new one invalidates prior outstanding
+// tokens for the same user at the service layer.
+model PasswordResetToken {
+  id         String   @id @default(uuid())
+  userId     String
+  tokenHash  String   @unique
+  expiresAt  DateTime
+  usedAt     DateTime?
+  requestedIp String?
+  createdAt  DateTime @default(now())
+
+  @@index([userId])
+}
+
+// API keys for the future public API (Enterprise tier). Scoped per-user or
+// per-org via ownerId + ownerType so both personal and team keys share
+// one table.
+model ApiKey {
+  id          String   @id @default(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organizationId String?
+  organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  name        String
+  keyHash     String   @unique
+  keyPrefix   String   // first 8 chars shown in UI for identification, e.g. "flk_a1b2"
+  lastUsedAt  DateTime?
+  expiresAt   DateTime?
+  revokedAt   DateTime?
+  createdAt   DateTime @default(now())
+
+  @@index([userId])
+  @@index([organizationId])
+}
+
+// ============================================================================
+// ORGANIZATIONS & TEAMS (Team / Enterprise tiers)
+// ============================================================================
+
+// An Organization is the billing + collaboration boundary for the Team and
+// Enterprise tiers. Free/Pro users never need one — FrustrationLog.organizationId
+// stays null for personal use.
+model Organization {
+  id            String   @id @default(uuid())
+  name          String
+  slug          String   @unique
+  logoUrl       String?
+  ownerId       String
+  owner         User     @relation("OrganizationOwner", fields: [ownerId], references: [id])
+  ssoEnabled    Boolean  @default(false) // Enterprise: SSO gate
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  members             OrganizationMember[]
+  frustrationLogs     FrustrationLog[]
+  categories          Category[]
+  aiReports           AIReport[]
+  subscriptions       Subscription[]
+  integrations        Integration[]
+  activityLogs        ActivityLog[]
+  apiKeys             ApiKey[]
+  invites             OrganizationInvite[]
+
+  @@index([ownerId])
+  @@index([slug])
+}
+
+// Join table between User and Organization carrying the per-org role.
+// This is the RBAC anchor for team-scoped permission checks.
+model OrganizationMember {
+  id             String   @id @default(uuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  userId         String
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role           OrgRole  @default(MEMBER)
+  joinedAt       DateTime @default(now())
+
+  @@unique([organizationId, userId])
+  @@index([userId])
+  @@index([organizationId])
+}
+
+// Pending invites (email may not correspond to an existing User yet).
+// Kept separate from OrganizationMember so unaccepted invites don't pollute
+// membership queries/RBAC checks.
+model OrganizationInvite {
+  id             String   @id @default(uuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  email          String
+  role           OrgRole  @default(MEMBER)
+  invitedById    String
+  tokenHash      String   @unique
+  acceptedAt     DateTime?
+  expiresAt      DateTime
+  createdAt      DateTime @default(now())
+
+  @@index([organizationId])
+  @@index([email])
+}
+
+// ============================================================================
+// CORE PRODUCT DOMAIN — Frustration Logging
+// ============================================================================
+
+// User-defined or system-seeded categories ("Meetings", "Software", ...).
+// Scoped to either a User (personal) or an Organization (team-shared) —
+// exactly one of userId/organizationId is set, enforced at the service layer
+// since Postgres has no native XOR constraint on nullable FKs.
+model Category {
+  id             String   @id @default(uuid())
+  name           String
+  color          String   @default("#D14A2D")
+  icon           String?
+  isSystem       Boolean  @default(false) // seeded defaults, not user-deletable
+  isActive       Boolean  @default(true)  // soft-delete flag; false = hidden from new-log selection but historical logs keep the reference
+  userId         String?
+  user           User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organizationId String?
+  organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  createdAt      DateTime @default(now())
+
+  frustrationLogs FrustrationLog[]
+
+  @@index([userId])
+  @@index([organizationId])
+}
+
+// The central table of the entire product. Every dashboard widget, AI
+// report, and analytics chart derives from this table, so it's indexed
+// heavily for the two dominant query patterns: "this user's logs over
+// time" and "this org's logs over time."
+model FrustrationLog {
+  id               String    @id @default(uuid())
+  userId           String
+  user             User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organizationId   String?   // set when logged in a team context
+  organization     Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+  categoryId       String?
+  category         Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+
+  description      String
+  source           LogSource @default(TEXT)
+  frustrationLevel Int       // 1-10, validated at DTO layer
+  estimatedMinutesLost Int?
+  location         String?
+  occurredAt       DateTime  @default(now()) // may differ from createdAt (backfilled logs)
+
+  // Friction Score inputs computed by the AI worker — denormalized onto the
+  // row so listing/sorting logs by score doesn't require a join or live
+  // recomputation on every read.
+  frictionScore    Float?
+  severityScore    Float?
+  frequencyScore   Float?
+  preventabilityScore Float?
+
+  // Semantic search vector, populated asynchronously by the AI worker after
+  // creation via pgvector. Nullable until the embedding job completes.
+  // REQUIRES the "vector" Postgres extension to be installed on the server
+  // (see datasource.extensions above) — this is a server-level binary
+  // install, not something `prisma migrate` can provide on its own. If the
+  // extension isn't installed, `prisma migrate dev` will fail with a clear
+  // error naming the missing extension, rather than a mysterious runtime
+  // failure later.
+  embedding        Unsupported("vector(1536)")?
+
+  isPubliclyShared Boolean   @default(false) // opt-in to CommunityContribution
+
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  deletedAt        DateTime? // soft delete — logs feed historical AI reports
+
+  attachments      Attachment[]
+  tags             LogTag[]
+  comments         Comment[]
+  communityContribution CommunityContribution?
+
+  @@index([userId, occurredAt])
+  @@index([organizationId, occurredAt])
+  @@index([categoryId])
+  @@index([frictionScore])
+  @@index([deletedAt])
+}
+
+model Tag {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  createdAt DateTime @default(now())
+
+  logs      LogTag[]
+}
+
+// Explicit join model (rather than an implicit Prisma m-n) so we can later
+// add fields like "addedBy" or "confidence" (for AI-suggested tags) without
+// a breaking migration.
+model LogTag {
+  id               String   @id @default(uuid())
+  frustrationLogId String
+  frustrationLog   FrustrationLog @relation(fields: [frustrationLogId], references: [id], onDelete: Cascade)
+  tagId            String
+  tag              Tag      @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  addedByAI        Boolean  @default(false)
+
+  @@unique([frustrationLogId, tagId])
+  @@index([tagId])
+}
+
+// Team collaboration on a log (e.g. a manager commenting on a flagged
+// bottleneck). Only relevant for org-scoped logs but modeled generically.
+model Comment {
+  id               String   @id @default(uuid())
+  frustrationLogId String
+  frustrationLog   FrustrationLog @relation(fields: [frustrationLogId], references: [id], onDelete: Cascade)
+  authorId         String
+  author           User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  body             String
+  createdAt        DateTime @default(now())
+  editedAt         DateTime?
+
+  @@index([frustrationLogId])
+}
+
+// Voice recordings, screenshots, and screen recordings attached to a log.
+// Only metadata lives in Postgres; binary content lives in S3/Cloudinary,
+// referenced by storageKey. Status tracks async processing (e.g. Whisper
+// transcription, virus scan, thumbnail generation).
+model Attachment {
+  id               String   @id @default(uuid())
+  frustrationLogId String
+  frustrationLog   FrustrationLog @relation(fields: [frustrationLogId], references: [id], onDelete: Cascade)
+  kind             AttachmentKind
+  status           AttachmentStatus @default(UPLOADING)
+  storageProvider  String   // "s3" | "cloudinary"
+  storageKey       String
+  publicUrl        String?
+  mimeType         String
+  sizeBytes        Int
+  durationSeconds  Int?     // for audio/video
+  transcript       String?  // Whisper output for voice notes
+  createdAt        DateTime @default(now())
+
+  @@index([frustrationLogId])
+}
+
+// ============================================================================
+// AI ANALYSIS
+// ============================================================================
+
+// Generated daily/weekly/monthly summaries. Scoped to a user or an org
+// (never both), same convention as Category. Kept as its own table (not
+// computed on the fly) because generation is expensive (LLM calls) and the
+// same report is read many times (dashboard, email, export).
+model AIReport {
+  id             String   @id @default(uuid())
+  userId         String?
+  user           User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organizationId String?
+  organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  period         ReportPeriod
+  periodStart    DateTime
+  periodEnd      DateTime
+  status         ReportStatus @default(PENDING)
+
+  summary        String?      // natural-language narrative
+  totalMinutesLost Int?
+  avgFrictionScore Float?
+  burnoutRiskScore Float?     // 0-1, drives BURNOUT_RISK_ALERT notification
+  topCategories  Json?        // [{categoryId, minutesLost, count}]
+  recommendations AIRecommendation[]
+
+  generatedAt    DateTime?
+  failureReason  String?
+  createdAt      DateTime @default(now())
+
+  @@index([userId, period, periodStart])
+  @@index([organizationId, period, periodStart])
+}
+
+// Individual actionable suggestions belonging to a report. Split out from
+// AIReport.summary (rather than a text blob) so the UI can render them as
+// distinct cards and track accept/dismiss state per recommendation.
+model AIRecommendation {
+  id          String   @id @default(uuid())
+  aiReportId  String
+  aiReport    AIReport @relation(fields: [aiReportId], references: [id], onDelete: Cascade)
+  title       String
+  description String
+  category    String?
+  isDismissed Boolean  @default(false)
+  isActioned  Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  @@index([aiReportId])
+}
+
+// ============================================================================
+// NOTIFICATIONS
+// ============================================================================
+
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      NotificationType
+  channel   NotificationChannel @default(IN_APP)
+  title     String
+  body      String
+  metadata  Json?    // e.g. { reportId, logId } for deep-linking
+  readAt    DateTime?
+  createdAt DateTime @default(now())
+
+  @@index([userId, readAt])
+}
+
+// ============================================================================
+// INTEGRATIONS (future feature surface, modeled now to avoid a breaking
+// migration later)
+// ============================================================================
+
+model Integration {
+  id             String   @id @default(uuid())
+  organizationId String?
+  organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  userId         String?
+  provider       IntegrationProvider
+  status         IntegrationStatus @default(CONNECTED)
+  accessToken    String?  // encrypted at rest via app-layer envelope encryption
+  refreshToken   String?
+  scopes         String[]
+  externalAccountId String?
+  connectedAt    DateTime @default(now())
+  lastSyncedAt   DateTime?
+
+  @@index([organizationId])
+  @@unique([organizationId, provider])
+}
+
+// ============================================================================
+// AUDIT / ACTIVITY LOG
+// ============================================================================
+
+// Immutable audit trail. Written to on every sensitive action (auth events,
+// role changes, subscription changes). Never updated, only inserted —
+// this is what supports SOC2-style audit requirements for Enterprise.
+model ActivityLog {
+  id             String   @id @default(uuid())
+  userId         String?
+  user           User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  organizationId String?
+  organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  action         ActivityAction
+  metadata       Json?
+  ipAddress      String?
+  userAgent      String?
+  createdAt      DateTime @default(now())
+
+  @@index([userId, createdAt])
+  @@index([organizationId, createdAt])
+  @@index([action])
+}
+
+// ============================================================================
+// COMMUNITY INSIGHTS (opt-in, anonymized aggregate data)
+// ============================================================================
+
+// A stripped-down, de-identified copy of a FrustrationLog the user has
+// opted to share publicly. Deliberately has NO userId — that's the point.
+// One-to-one with the source log (via frustrationLogId) so a user can
+// revoke sharing by deleting this row without touching their private log.
+model CommunityContribution {
+  id               String   @id @default(uuid())
+  frustrationLogId String   @unique
+  frustrationLog   FrustrationLog @relation(fields: [frustrationLogId], references: [id], onDelete: Cascade)
+  categoryLabel    String   // denormalized text, not a FK — must survive source deletion
+  region           String?  // coarse geography only, e.g. "US-CA", never precise location
+  frictionScore    Float?
+  createdAt        DateTime @default(now())
+
+  @@index([categoryLabel])
+  @@index([region])
+}
+
+// ============================================================================
+// BILLING
+// ============================================================================
+
+model SubscriptionPlan {
+  id            String   @id @default(uuid())
+  tier          PlanTier @unique
+  name          String
+  priceMonthlyCents Int
+  priceYearlyCents  Int
+  features      Json     // feature flags/limits, e.g. { maxLogsPerMonth, aiAssistant: true }
+  stripePriceIdMonthly String?
+  stripePriceIdYearly  String?
+  isActive      Boolean  @default(true)
+
+  subscriptions Subscription[]
+}
+
+// Owner can be either a User (personal Pro plan) or an Organization (Team/
+// Enterprise). ownerType + a partial-unique-index-style app-level check
+// enforces exactly one owner is set — Postgres can't express XOR on FKs
+// declaratively in Prisma, so this is validated in the billing service.
+model Subscription {
+  id             String   @id @default(uuid())
+  userId         String?
+  user           User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organizationId String?
+  organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  planId         String
+  plan           SubscriptionPlan @relation(fields: [planId], references: [id])
+  status         SubscriptionStatus @default(TRIALING)
+  stripeCustomerId     String?
+  stripeSubscriptionId String? @unique
+  currentPeriodStart   DateTime
+  currentPeriodEnd     DateTime
+  cancelAtPeriodEnd    Boolean @default(false)
+  trialEndsAt          DateTime?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  invoices       Invoice[]
+
+  @@index([userId])
+  @@index([organizationId])
+  @@index([stripeCustomerId])
+}
+
+model Invoice {
+  id             String   @id @default(uuid())
+  subscriptionId String
+  subscription   Subscription @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+  stripeInvoiceId String? @unique
+  amountCents    Int
+  currency       String   @default("usd")
+  status         InvoiceStatus
+  issuedAt       DateTime
+  paidAt         DateTime?
+  pdfUrl         String?
+
+  @@index([subscriptionId])
+}
