@@ -26,6 +26,10 @@ import { StorageModule } from '../../storage/storage.module';
           host: config.get<string>('redis.host'),
           port: config.get<number>('redis.port'),
           password: config.get<string>('redis.password'),
+          // Managed Redis providers (Upstash, Redis Cloud, Render Redis)
+          // require TLS. REDIS_TLS=true enables it; local Redis stays
+          // plaintext by default.
+          tls: config.get<boolean>('redis.tls') ? {} : undefined,
         },
         defaultJobOptions: {
           attempts: 3,

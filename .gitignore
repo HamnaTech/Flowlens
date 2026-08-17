@@ -9,10 +9,16 @@ build/
 .turbo/
 *.tsbuildinfo
 
-# Environment
+# Environment — never commit real secrets
 .env
 .env.local
+.env.production
+.env.staging
+.env.test
 .env.*.local
+.env.*.production
+.env.*.staging
+.env.*.test
 
 # Logs
 *.log

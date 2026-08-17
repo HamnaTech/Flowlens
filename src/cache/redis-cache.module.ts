@@ -16,6 +16,10 @@ import { CacheHelperService } from './cache-helper.service';
           socket: {
             host: config.get<string>('redis.host'),
             port: config.get<number>('redis.port'),
+            // Managed Redis providers (Upstash, Redis Cloud, Render Redis)
+            // require TLS. REDIS_TLS=true enables it; local Redis stays
+            // plaintext by default.
+            tls: config.get<boolean>('redis.tls') || undefined,
           },
           password: config.get<string>('redis.password'),
         }),

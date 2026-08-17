@@ -1,0 +1,105 @@
+# Render Blueprint — FlowLens Backend
+# Deploys the NestJS API + embedded BullMQ workers as a single web service.
+# The BullMQ processors run inside the main app process (see src/modules/jobs/queue.module.ts),
+# so no separate worker service is required.
+#
+# To use: connect this repo to Render, or use "New Blueprint" and point it at
+# this file. Then set the environment variables listed under envVars below
+# (or in the Render dashboard after the service is created).
+
+services:
+  - type: web
+    name: flowlens-backend
+    runtime: node
+    plan: free
+    buildCommand: npm install && npx prisma generate && npm run build
+    startCommand: npm run start:prod
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 4000
+      - key: API_PREFIX
+        value: api
+      - key: API_DEFAULT_VERSION
+        value: "1"
+      # Comma-separated list of allowed browser origins.
+      # Replace with your actual Vercel frontend URL after deploying it.
+      - key: CORS_ORIGINS
+        value: https://your-frontend.vercel.app
+      - key: DATABASE_URL
+        sync: false
+      - key: DATABASE_POOL_MAX
+        value: "20"
+      - key: REDIS_HOST
+        sync: false
+      - key: REDIS_PORT
+        value: "6379"
+      - key: REDIS_PASSWORD
+        sync: false
+      - key: REDIS_TLS
+        value: "true"
+      - key: REDIS_CACHE_TTL_SECONDS
+        value: "60"
+      - key: JWT_ACCESS_SECRET
+        sync: false
+      - key: JWT_ACCESS_EXPIRES_IN
+        value: 15m
+      - key: JWT_REFRESH_SECRET
+        sync: false
+      - key: JWT_REFRESH_EXPIRES_IN
+        value: 30d
+      - key: PASSWORD_HASH_MEMORY_COST
+        value: "19456"
+      - key: PASSWORD_HASH_TIME_COST
+        value: "2"
+      - key: STORAGE_PROVIDER
+        value: s3
+      - key: MAX_UPLOAD_SIZE_MB
+        value: "50"
+      - key: AI_PROVIDER
+        value: openai
+      - key: THROTTLE_TTL_SECONDS
+        value: "60"
+      - key: THROTTLE_LIMIT
+        value: "100"
+      - key: LOG_LEVEL
+        value: info
+      # Optional — set these in the Render dashboard if you use the features:
+      # - key: OPENAI_API_KEY
+      #   sync: false
+      # - key: S3_BUCKET
+      #   sync: false
+      # - key: S3_REGION
+      #   sync: false
+      # - key: S3_ACCESS_KEY_ID
+      #   sync: false
+      # - key: S3_SECRET_ACCESS_KEY
+      #   sync: false
+      # - key: SMTP_HOST
+      #   sync: false
+      # - key: SMTP_PORT
+      #   sync: false
+      # - key: SMTP_USER
+      #   sync: false
+      # - key: SMTP_PASSWORD
+      #   sync: false
+      # - key: EMAIL_FROM
+      #   sync: false
+      # - key: STRIPE_SECRET_KEY
+      #   sync: false
+      # - key: STRIPE_WEBHOOK_SECRET
+      #   sync: false
+      # - key: GOOGLE_CLIENT_ID
+      #   sync: false
+      # - key: GOOGLE_CLIENT_SECRET
+      #   sync: false
+      # - key: GOOGLE_CALLBACK_URL
+      #   sync: false
+      # - key: GITHUB_CLIENT_ID
+      #   sync: false
+      # - key: GITHUB_CLIENT_SECRET
+      #   sync: false
+      # - key: GITHUB_CALLBACK_URL
+      #   sync: false

@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { motion, useReducedMotion, useScroll, useTransform, type MotionValue } from 'framer-motion';
+import { motion, useReducedMotion, useScroll, useTransform, type MotionValue, type TargetAndTransition } from 'framer-motion';
 
 /**
  * The signature FlowLens illustration: a stylized, semi-dimensional desk
@@ -138,7 +138,7 @@ function SceneSvg({ mood, reduce }: { mood: Mood; reduce: boolean }) {
   const hair = 'hsl(24 22% 20%)';
   const ink = 'hsl(var(--foreground))';
 
-  const loop = (v: object) => (reduce ? undefined : v);
+  const loop = (v: TargetAndTransition): TargetAndTransition | undefined => (reduce ? undefined : v);
 
   return (
     <svg viewBox="0 0 520 440" className="relative w-full" role="img" aria-label={isCalm ? 'A person working calmly at a tidy desk' : 'A person becoming frustrated at a cluttered desk'}>
