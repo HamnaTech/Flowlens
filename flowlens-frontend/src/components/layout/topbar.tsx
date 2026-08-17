@@ -17,15 +17,15 @@ export function Topbar({ title }: { title: string }) {
   });
 
   return (
-    <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-border/60 bg-background/80 px-4 backdrop-blur-md md:px-6">
+    <header className="sticky top-0 z-30 flex h-20 items-center justify-between border-b border-border/70 bg-background/80 px-4 backdrop-blur-md md:px-8">
       <div className="flex items-center gap-3">
-        <h1 className="text-base font-semibold tracking-tight">{title}</h1>
+        <div><p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">FlowLens workspace</p><h1 className="mt-1 font-display text-xl font-semibold tracking-tight">{title}</h1></div>
       </div>
 
       <div className="flex items-center gap-2">
         <Link
           to="/notifications"
-          className="relative rounded-lg p-2 text-muted-foreground transition-all duration-200 hover:bg-accent hover:text-accent-foreground focus-ring"
+          className="relative rounded-full border border-border/70 bg-card/60 p-2.5 text-muted-foreground transition-all duration-200 hover:bg-accent hover:text-foreground focus-ring"
           aria-label="Notifications"
         >
           <Bell className="h-4.5 w-4.5" />
@@ -39,8 +39,8 @@ export function Topbar({ title }: { title: string }) {
         </Link>
 
         <DropdownMenu.Root>
-          <DropdownMenu.Trigger className="flex items-center gap-2 rounded-lg p-1.5 text-sm transition-colors hover:bg-accent focus-ring">
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-secondary to-primary text-xs font-semibold text-white shadow-sm">
+          <DropdownMenu.Trigger className="flex items-center gap-2 rounded-full border border-border/70 bg-card/60 p-1.5 text-sm transition-colors hover:bg-accent focus-ring">
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-secondary/15 text-xs font-semibold text-secondary shadow-sm">
               {user ? initials(user.displayName) : '—'}
             </div>
             <span className="hidden text-sm font-medium sm:inline">{user?.displayName}</span>
@@ -50,7 +50,7 @@ export function Topbar({ title }: { title: string }) {
             <DropdownMenu.Content
               align="end"
               sideOffset={8}
-              className="z-50 min-w-[200px] rounded-xl border border-border bg-card p-1.5 shadow-lg"
+              className="z-50 min-w-[210px] rounded-2xl border border-border bg-card p-1.5 shadow-lg"
             >
               <DropdownMenu.Item asChild>
                 <Link to="/settings" className="flex cursor-pointer items-center gap-2 rounded-lg px-2.5 py-2 text-sm outline-none transition-colors hover:bg-accent">

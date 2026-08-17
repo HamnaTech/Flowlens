@@ -126,7 +126,7 @@ export function FrictionGauge({ score, size = 'md' }: FrictionGaugeProps) {
         >
           {score !== null ? score.toFixed(1) : '—'}
         </motion.p>
-        <p className={cn('text-xs font-medium', tier === 'high' ? 'text-destructive' : tier === 'medium' ? 'text-warning-foreground' : 'text-success')}>
+        <p className={cn('text-xs font-medium', tier === 'high' ? 'text-destructive' : tier === 'medium' ? 'text-warning' : 'text-success')}>
           {label}
         </p>
       </div>

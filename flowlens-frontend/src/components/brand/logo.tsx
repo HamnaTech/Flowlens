@@ -17,8 +17,8 @@ function LogoMark({ className }: { className?: string }) {
     <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
       <defs>
         <linearGradient id={gradientId} x1="2" y1="26" x2="30" y2="6" gradientUnits="userSpaceOnUse">
-          <stop offset="0" stopColor="hsl(255 45% 68%)" />
-          <stop offset="1" stopColor="hsl(168 45% 58%)" />
+          <stop offset="0" stopColor="hsl(var(--primary))" />
+          <stop offset="1" stopColor="hsl(var(--secondary))" />
         </linearGradient>
       </defs>
       <path
@@ -30,7 +30,7 @@ function LogoMark({ className }: { className?: string }) {
         fill="none"
       />
       {/* Endpoint node — where "flow" resolves, echoed in the Friction Gauge's needle hub */}
-      <circle cx="29" cy="5.5" r="2.25" fill="hsl(168 45% 58%)" />
+      <circle cx="29" cy="5.5" r="2.25" fill="hsl(var(--secondary))" />
     </svg>
   );
 }

@@ -27,7 +27,7 @@ export function AppShell() {
       <Sidebar />
       <div className="flex min-w-0 flex-1 flex-col">
         <Topbar title={titleFor(location.pathname)} />
-        <main className="flex-1 px-4 pb-20 pt-5 md:px-6 md:pb-8">
+        <main className="flex-1 px-4 pb-20 pt-6 md:px-8 md:pb-10 md:pt-8">
           <AnimatePresence mode="wait">
             <motion.div
               key={location.pathname}

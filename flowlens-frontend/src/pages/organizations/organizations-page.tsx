@@ -89,7 +89,7 @@ export function OrganizationsPage() {
                 <Card className="h-full transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-lg">
                   <CardContent className="p-5">
                     <div className="flex items-center justify-between">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-secondary/20 to-primary/20 text-secondary">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-secondary/15 text-secondary">
                         <Building2 className="h-5 w-5" />
                       </div>
                       {org.myRole && (

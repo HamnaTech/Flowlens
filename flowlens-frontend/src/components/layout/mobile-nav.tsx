@@ -1,6 +1,6 @@
 import { NavLink } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { LayoutDashboard, ListChecks, Tags, FileBarChart, Menu } from 'lucide-react';
+import { LayoutDashboard, ListChecks, Tags, ChartBar as FileBarChart, Menu } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const mobileNavItems = [
@@ -12,14 +12,14 @@ const mobileNavItems = [
 
 export function MobileNav() {
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-40 flex border-t border-border/60 bg-card/90 backdrop-blur-md md:hidden">
+    <nav className="fixed inset-x-0 bottom-0 z-40 flex border-t border-border/80 bg-card/95 shadow-[0_-8px_24px_-18px_rgb(22_24_26_/_0.4)] backdrop-blur-md md:hidden">
       {mobileNavItems.map(({ to, label, icon: Icon }) => (
         <NavLink
           key={to}
           to={to}
           className={({ isActive }) =>
             cn(
-              'relative flex flex-1 flex-col items-center gap-0.5 py-2.5 text-xs transition-colors',
+              'relative flex flex-1 flex-col items-center gap-1 py-3 text-[11px] transition-colors',
               isActive ? 'text-primary' : 'text-muted-foreground',
             )
           }

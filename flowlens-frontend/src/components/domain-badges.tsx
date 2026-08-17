@@ -21,7 +21,7 @@ export function FrictionScoreBadge({ score }: { score: number | null | undefined
       className={cn(
         'inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold font-mono',
         tier === 'high' && 'bg-destructive/15 text-destructive',
-        tier === 'medium' && 'bg-warning/20 text-warning-foreground',
+        tier === 'medium' && 'bg-warning/20 text-warning',
         tier === 'low' && 'bg-success/15 text-success',
       )}
     >

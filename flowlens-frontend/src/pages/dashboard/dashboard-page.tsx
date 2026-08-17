@@ -60,7 +60,7 @@ function MetricCard({
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, delay }}
-      className="tilt-card rounded-xl border border-border bg-card p-5 shadow-sm"
+      className="premium-card rounded-xl border border-border bg-card p-5 shadow-sm"
     >
       <div className="flex items-center justify-between">
         <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground">{label}</span>
@@ -126,7 +126,7 @@ export function DashboardPage() {
           {/* Greeting + gauge */}
           <div className="flex flex-col items-center gap-4 lg:flex-row lg:gap-8">
             <div>
-              <h2 className="text-2xl font-bold tracking-tight">
+              <h2 className="font-display text-2xl font-bold tracking-tight">
                 {greeting()}, <span className="text-gradient">{user?.displayName?.split(' ')[0] ?? 'there'}</span>
               </h2>
               <p className="mt-1 text-sm text-muted-foreground">

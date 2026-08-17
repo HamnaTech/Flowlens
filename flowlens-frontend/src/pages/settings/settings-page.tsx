@@ -88,7 +88,7 @@ function ProfileSection() {
       </CardHeader>
       <CardContent>
         <div className="mb-5 flex items-center gap-3">
-          <div className="flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-secondary to-primary text-base font-semibold text-white shadow-md">
+          <div className="flex h-14 w-14 items-center justify-center rounded-full bg-secondary/15 text-base font-semibold text-secondary shadow-sm">
             {profile ? initials(profile.displayName) : '—'}
           </div>
           <div>

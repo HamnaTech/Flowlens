@@ -109,7 +109,7 @@ export function TeamMembersPage() {
                 transition={{ duration: 0.2, delay: i * 0.03 }}
                 className="group flex items-center gap-3 p-4 transition-colors hover:bg-accent/30"
               >
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-secondary/20 to-primary/20 text-sm font-semibold text-secondary">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-secondary/15 text-sm font-semibold text-secondary">
                   {initials(m.user.displayName)}
                 </div>
                 <div className="min-w-0 flex-1">

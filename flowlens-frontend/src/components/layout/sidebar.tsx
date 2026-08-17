@@ -1,7 +1,7 @@
 import { NavLink } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
-import { LayoutDashboard, ListChecks, Tags, FileBarChart, Building2, Bell, Settings } from 'lucide-react';
+import { LayoutDashboard, ListChecks, Tags, ChartBar as FileBarChart, Building2, Bell, Settings } from 'lucide-react';
 import { cn, initials } from '@/lib/utils';
 import { useAuth } from '@/context/auth-context';
 import { Logo } from '@/components/brand/logo';
@@ -39,14 +39,14 @@ function NavGroup({ label, items }: { label?: string; items: typeof mainNav | ty
             {({ isActive }) => (
               <div
                 className={cn(
-                  'relative flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200',
-                  isActive ? 'text-primary' : 'text-muted-foreground hover:bg-accent/60 hover:text-accent-foreground',
+                  'relative flex items-center gap-3 rounded-xl px-3.5 py-3 text-sm font-medium transition-all duration-200',
+                  isActive ? 'text-foreground' : 'text-muted-foreground hover:bg-accent/70 hover:text-foreground',
                 )}
               >
                 {isActive && (
                   <motion.div
                     layoutId="sidebar-active"
-                    className="absolute inset-0 rounded-lg bg-primary/10"
+                    className="absolute inset-0 rounded-xl bg-primary/10"
                     transition={{ type: 'spring', stiffness: 400, damping: 30 }}
                   />
                 )}
@@ -58,7 +58,7 @@ function NavGroup({ label, items }: { label?: string; items: typeof mainNav | ty
                 {isActive && (
                   <motion.span
                     layoutId="sidebar-indicator"
-                    className="absolute left-0 top-1/2 h-5 w-0.5 -translate-y-1/2 rounded-full bg-primary"
+                    className="absolute left-0 top-1/2 h-6 w-0.5 -translate-y-1/2 rounded-full bg-primary"
                     transition={{ type: 'spring', stiffness: 400, damping: 30 }}
                   />
                 )}
@@ -75,20 +75,20 @@ export function Sidebar() {
   const { user } = useAuth();
 
   return (
-    <aside className="hidden w-64 shrink-0 flex-col border-r border-border bg-card/60 backdrop-blur-sm md:flex">
-      <div className="flex h-16 items-center border-b border-border/60 px-5">
+    <aside className="hidden w-64 shrink-0 flex-col border-r border-border/80 bg-card/45 backdrop-blur-sm md:flex">
+      <div className="flex h-20 items-center border-b border-border/70 px-6">
         <Logo iconClassName="h-7 w-7" textClassName="text-base" />
       </div>
 
-      <nav className="flex-1 space-y-1 overflow-y-auto p-3">
+      <nav className="flex-1 space-y-2 overflow-y-auto p-4">
         <NavGroup items={mainNav} />
         <NavGroup label="Workspace" items={workspaceNav} />
         <NavGroup label="System" items={systemNav} />
       </nav>
 
-      <div className="border-t border-border/60 p-3">
-        <div className="flex items-center gap-3 rounded-lg p-2 transition-colors hover:bg-accent/60">
-          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-secondary to-primary text-xs font-semibold text-white shadow-sm">
+      <div className="border-t border-border/70 p-4">
+        <div className="flex items-center gap-3 rounded-xl p-2 transition-colors hover:bg-accent/60">
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-secondary/15 text-xs font-semibold text-secondary shadow-sm">
             {user ? initials(user.displayName) : '—'}
           </div>
           <div className="min-w-0 flex-1">
