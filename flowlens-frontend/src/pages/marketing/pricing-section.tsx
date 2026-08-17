@@ -76,7 +76,8 @@ export function PricingSection({ id }: { id?: string }) {
   return (
     <section id={id} className="mx-auto max-w-5xl px-4 py-20 sm:px-6">
       <RevealOnScroll className="mx-auto max-w-xl text-center">
-        <h2 className="font-display text-3xl font-semibold tracking-tight sm:text-4xl">Simple, honest pricing</h2>
+        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">Pricing</p>
+        <h2 className="mt-4 font-display text-3xl font-semibold tracking-tight sm:text-4xl">Simple, honest pricing</h2>
         <p className="mt-3 text-muted-foreground">Start free. Upgrade when the insight is worth it.</p>
       </RevealOnScroll>
 
@@ -85,16 +86,19 @@ export function PricingSection({ id }: { id?: string }) {
           <StaggerItem key={tier.name}>
             <div
               className={cn(
-                'relative flex h-full flex-col rounded-2xl border p-6 transition-all duration-300',
+                'relative flex h-full flex-col overflow-hidden rounded-[1.25rem] p-6 transition-all duration-300 hover:-translate-y-1',
                 tier.highlighted
-                  ? 'border-primary/40 bg-gradient-to-b from-primary/10 to-transparent shadow-lg shadow-primary/10 hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/15'
-                  : 'border-border bg-card hover:-translate-y-1 hover:border-primary/30 hover:shadow-lg',
+                  ? 'border-2 border-coral bg-card shadow-[var(--shadow-lg)] hover:shadow-[var(--shadow-xl)]'
+                  : 'border border-border bg-card hover:border-coral/40 hover:shadow-[var(--shadow-md)]',
               )}
             >
               {tier.highlighted && (
-                <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-primary px-3 py-1 text-xs font-semibold text-primary-foreground">
-                  Most popular
-                </span>
+                <>
+                  <span className="absolute inset-x-0 top-0 h-1.5 bg-coral" />
+                  <span className="absolute right-4 top-4 rounded-full bg-coral px-3 py-1 text-xs font-semibold text-coral-foreground">
+                    Most popular
+                  </span>
+                </>
               )}
               <h3 className="font-display text-lg font-semibold">{tier.name}</h3>
               <div className="mt-2 flex items-baseline gap-1">

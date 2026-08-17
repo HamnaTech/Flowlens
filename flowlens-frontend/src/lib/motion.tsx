@@ -1,5 +1,5 @@
-import { motion, useReducedMotion, type Variants } from 'framer-motion';
-import type { ReactNode } from 'react';
+import { motion, useMotionValue, useReducedMotion, useSpring, type Variants } from 'framer-motion';
+import { useRef, type ReactNode } from 'react';
 
 // ----------------------------------------------------------------------
 // Timing tokens — three tiers per the animation philosophy: micro (hover/
@@ -113,6 +113,69 @@ export function FloatingElement({ children, className, duration = 4, delay = 0 }
     >
       {children}
     </motion.div>
+  );
+}
+
+/**
+ * Magnetic wrapper — the child gently follows the cursor while hovered and
+ * springs back on leave. Used on primary CTAs for a tactile micro-interaction.
+ * Disabled entirely under reduced-motion.
+ */
+export function Magnetic({ children, className, strength = 0.35 }: { children: ReactNode; className?: string; strength?: number }) {
+  const reduce = useReducedMotion();
+  const ref = useRef<HTMLDivElement>(null);
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  const sx = useSpring(x, { stiffness: 220, damping: 18, mass: 0.4 });
+  const sy = useSpring(y, { stiffness: 220, damping: 18, mass: 0.4 });
+
+  if (reduce) return <div className={className}>{children}</div>;
+
+  return (
+    <motion.div
+      ref={ref}
+      className={className}
+      style={{ x: sx, y: sy }}
+      onMouseMove={(e) => {
+        const rect = ref.current?.getBoundingClientRect();
+        if (!rect) return;
+        x.set((e.clientX - (rect.left + rect.width / 2)) * strength);
+        y.set((e.clientY - (rect.top + rect.height / 2)) * strength);
+      }}
+      onMouseLeave={() => {
+        x.set(0);
+        y.set(0);
+      }}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+/** Word-by-word headline reveal — solid ink, editorial cadence. */
+export function WordsReveal({ text, className, highlight, delay = 0 }: { text: string; className?: string; highlight?: string; delay?: number }) {
+  const reduce = useReducedMotion();
+  const words = text.split(' ');
+  const highlightWords = highlight ? highlight.split(' ') : [];
+  return (
+    <span className={className}>
+      {words.map((word, i) => {
+        const isHi = highlightWords.includes(word.replace(/[.,]/g, ''));
+        return (
+          <span key={word + i} className="inline-block overflow-hidden align-bottom">
+            <motion.span
+              className={isHi ? 'inline-block text-primary' : 'inline-block'}
+              initial={reduce ? { opacity: 0 } : { y: '110%' }}
+              animate={reduce ? { opacity: 1 } : { y: 0 }}
+              transition={{ duration: 0.7, delay: delay + i * 0.06, ease: [0.16, 1, 0.3, 1] }}
+            >
+              {word}
+              {i < words.length - 1 ? '\u00A0' : ''}
+            </motion.span>
+          </span>
+        );
+      })}
+    </span>
   );
 }
 

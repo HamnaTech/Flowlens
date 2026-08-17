@@ -40,6 +40,34 @@ export default {
           DEFAULT: 'hsl(var(--accent-peach))',
           foreground: 'hsl(var(--accent-peach-foreground))',
         },
+        peach: {
+          DEFAULT: 'hsl(var(--peach))',
+          foreground: 'hsl(var(--peach-foreground))',
+        },
+        coral: {
+          DEFAULT: 'hsl(var(--coral))',
+          foreground: 'hsl(var(--coral-foreground))',
+        },
+        sage: {
+          DEFAULT: 'hsl(var(--sage))',
+          foreground: 'hsl(var(--sage-foreground))',
+        },
+        mint: {
+          DEFAULT: 'hsl(var(--mint))',
+          foreground: 'hsl(var(--mint-foreground))',
+        },
+        butter: {
+          DEFAULT: 'hsl(var(--butter))',
+          foreground: 'hsl(var(--butter-foreground))',
+        },
+        powder: {
+          DEFAULT: 'hsl(var(--powder))',
+          foreground: 'hsl(var(--powder-foreground))',
+        },
+        lavender: {
+          DEFAULT: 'hsl(var(--lavender))',
+          foreground: 'hsl(var(--lavender-foreground))',
+        },
         card: {
           DEFAULT: 'hsl(var(--card))',
           foreground: 'hsl(var(--card-foreground))',

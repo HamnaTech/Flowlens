@@ -4,70 +4,122 @@
 
 @layer base {
   :root {
-    --background: 40 18% 93%;
-    --foreground: 210 8% 10%;
-    --card: 40 20% 97%;
-    --card-foreground: 210 8% 10%;
-    --popover: 40 20% 97%;
-    --popover-foreground: 210 8% 10%;
-    --primary: 12 65% 50%;
-    --primary-foreground: 40 20% 97%;
-    --secondary: 165 40% 31%;
-    --secondary-foreground: 40 20% 97%;
-    --muted: 38 12% 87%;
-    --muted-foreground: 30 6% 39%;
-    --accent: 34 20% 89%;
-    --accent-foreground: 210 8% 10%;
-    --destructive: 12 65% 50%;
-    --destructive-foreground: 40 20% 97%;
-    --success: 165 40% 31%;
-    --success-foreground: 40 20% 97%;
-    --warning: 28 68% 45%;
-    --warning-foreground: 210 8% 10%;
-    --border: 34 12% 80%;
-    --input: 34 12% 76%;
-    --ring: 12 65% 50%;
-    --accent-peach: 24 45% 68%;
-    --accent-peach-foreground: 210 8% 10%;
-    --radius: 1rem;
-    --shadow-sm: 0 1px 2px rgb(22 24 26 / 0.04);
-    --shadow-md: 0 10px 28px -16px rgb(22 24 26 / 0.24), 0 2px 6px rgb(22 24 26 / 0.05);
-    --shadow-lg: 0 18px 42px -20px rgb(22 24 26 / 0.26), 0 5px 12px rgb(22 24 26 / 0.06);
-    --shadow-xl: 0 28px 60px -24px rgb(22 24 26 / 0.32), 0 8px 18px rgb(22 24 26 / 0.08);
-    --shadow-glow-teal: 0 0 24px -8px rgb(47 111 98 / 0.45);
-    --shadow-glow-rust: 0 0 24px -8px rgb(209 74 45 / 0.45);
+    /* ---- Editorial pastel system ------------------------------------
+       Warm paper background, pure-white surfaces, near-black ink, and a
+       small family of SOLID pastel accents (peach, coral, sage, mint,
+       butter, powder, lavender). No gradients — depth comes from
+       layering, borders and soft shadows. */
+    --background: 45 24% 96%;          /* #F8F7F3 warm paper */
+    --foreground: 0 0% 9%;             /* #171717 ink */
+    --card: 0 0% 100%;                 /* #FFFFFF surface */
+    --card-foreground: 0 0% 9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 9%;
+
+    --primary: 13 73% 68%;             /* #E98A70 coral */
+    --primary-foreground: 20 20% 12%;  /* dark ink for legibility on pastel */
+    --secondary: 150 20% 34%;          /* deep sage-green ink accent */
+    --secondary-foreground: 45 24% 97%;
+
+    --muted: 42 16% 91%;               /* soft warm gray */
+    --muted-foreground: 60 3% 41%;     /* #6B6B67 secondary text */
+    --accent: 42 22% 89%;              /* hover / subtle surface */
+    --accent-foreground: 0 0% 9%;
+
+    --destructive: 6 58% 52%;          /* clear red, distinct from coral */
+    --destructive-foreground: 45 24% 97%;
+    --success: 150 30% 38%;
+    --success-foreground: 45 24% 97%;
+    --warning: 40 62% 52%;
+    --warning-foreground: 20 20% 12%;
+
+    --border: 40 14% 85%;
+    --input: 40 14% 80%;
+    --ring: 13 73% 68%;
+
+    /* Named solid pastels — used directly across the app */
+    --peach: 14 78% 79%;               /* #F3B39F */
+    --peach-foreground: 20 25% 16%;
+    --coral: 13 73% 68%;               /* #E98A70 */
+    --coral-foreground: 20 25% 14%;
+    --sage: 134 18% 76%;               /* #B8CDBD */
+    --sage-foreground: 150 22% 18%;
+    --mint: 153 26% 82%;               /* #C7DDD3 */
+    --mint-foreground: 153 24% 16%;
+    --butter: 51 55% 80%;              /* #E8DFAF */
+    --butter-foreground: 42 40% 18%;
+    --powder: 210 41% 85%;             /* #C8D8E8 */
+    --powder-foreground: 212 34% 20%;
+    --lavender: 260 33% 86%;           /* #D8D0E8 — used sparingly */
+    --lavender-foreground: 260 24% 22%;
+
+    /* Legacy alias kept so existing references stay valid */
+    --accent-peach: 14 78% 79%;
+    --accent-peach-foreground: 20 25% 16%;
+
+    --radius: 0.9rem;
+    --shadow-sm: 0 1px 2px rgb(23 23 23 / 0.05);
+    --shadow-md: 0 8px 24px -14px rgb(23 23 23 / 0.20), 0 2px 5px rgb(23 23 23 / 0.05);
+    --shadow-lg: 0 18px 44px -22px rgb(23 23 23 / 0.24), 0 5px 12px rgb(23 23 23 / 0.06);
+    --shadow-xl: 0 30px 64px -28px rgb(23 23 23 / 0.30), 0 10px 20px rgb(23 23 23 / 0.08);
+    /* Retained token names (referenced elsewhere) — now flat soft shadows, no neon glow */
+    --shadow-glow-teal: 0 6px 18px -10px rgb(58 92 74 / 0.35);
+    --shadow-glow-rust: 0 6px 18px -10px rgb(210 108 82 / 0.40);
   }
 
   .dark {
-    --background: 210 8% 9%;
-    --foreground: 40 20% 93%;
-    --card: 210 7% 13%;
-    --card-foreground: 40 20% 93%;
-    --popover: 210 7% 13%;
-    --popover-foreground: 40 20% 93%;
-    --primary: 12 62% 61%;
-    --primary-foreground: 210 8% 9%;
-    --secondary: 165 32% 49%;
-    --secondary-foreground: 210 8% 9%;
-    --muted: 210 6% 18%;
-    --muted-foreground: 36 10% 67%;
-    --accent: 210 6% 20%;
-    --accent-foreground: 40 20% 93%;
-    --destructive: 12 62% 61%;
-    --destructive-foreground: 210 8% 9%;
-    --success: 165 32% 49%;
-    --success-foreground: 210 8% 9%;
-    --warning: 28 64% 61%;
-    --warning-foreground: 210 8% 9%;
-    --border: 210 6% 24%;
-    --input: 210 6% 28%;
-    --ring: 12 62% 61%;
-    --accent-peach: 24 40% 54%;
-    --accent-peach-foreground: 40 20% 93%;
-    --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.24);
-    --shadow-md: 0 10px 28px -16px rgb(0 0 0 / 0.55), 0 2px 6px rgb(0 0 0 / 0.2);
-    --shadow-lg: 0 18px 42px -20px rgb(0 0 0 / 0.65), 0 5px 12px rgb(0 0 0 / 0.24);
-    --shadow-xl: 0 28px 60px -24px rgb(0 0 0 / 0.75), 0 8px 18px rgb(0 0 0 / 0.3);
+    --background: 30 8% 10%;           /* warm charcoal */
+    --foreground: 44 22% 92%;
+    --card: 30 7% 13%;
+    --card-foreground: 44 22% 92%;
+    --popover: 30 7% 13%;
+    --popover-foreground: 44 22% 92%;
+
+    --primary: 13 66% 66%;
+    --primary-foreground: 20 25% 10%;
+    --secondary: 150 22% 62%;
+    --secondary-foreground: 30 8% 10%;
+
+    --muted: 30 6% 18%;
+    --muted-foreground: 42 10% 66%;
+    --accent: 30 6% 20%;
+    --accent-foreground: 44 22% 92%;
+
+    --destructive: 6 58% 60%;
+    --destructive-foreground: 30 8% 10%;
+    --success: 150 30% 58%;
+    --success-foreground: 30 8% 10%;
+    --warning: 40 60% 62%;
+    --warning-foreground: 20 25% 10%;
+
+    --border: 30 6% 24%;
+    --input: 30 6% 28%;
+    --ring: 13 66% 66%;
+
+    --peach: 14 46% 62%;
+    --peach-foreground: 30 20% 12%;
+    --coral: 13 60% 64%;
+    --coral-foreground: 30 20% 10%;
+    --sage: 134 20% 58%;
+    --sage-foreground: 150 24% 12%;
+    --mint: 153 22% 62%;
+    --mint-foreground: 153 24% 12%;
+    --butter: 51 40% 64%;
+    --butter-foreground: 42 40% 12%;
+    --powder: 210 32% 66%;
+    --powder-foreground: 212 34% 14%;
+    --lavender: 260 26% 70%;
+    --lavender-foreground: 260 24% 14%;
+
+    --accent-peach: 14 46% 62%;
+    --accent-peach-foreground: 30 20% 12%;
+
+    --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.30);
+    --shadow-md: 0 8px 24px -14px rgb(0 0 0 / 0.60), 0 2px 5px rgb(0 0 0 / 0.24);
+    --shadow-lg: 0 18px 44px -22px rgb(0 0 0 / 0.68), 0 5px 12px rgb(0 0 0 / 0.28);
+    --shadow-xl: 0 30px 64px -28px rgb(0 0 0 / 0.78), 0 10px 20px rgb(0 0 0 / 0.34);
+    --shadow-glow-teal: 0 6px 18px -10px rgb(0 0 0 / 0.5);
+    --shadow-glow-rust: 0 6px 18px -10px rgb(0 0 0 / 0.5);
   }
 
   * { @apply border-border; }
@@ -78,18 +130,17 @@
     @apply bg-background text-foreground antialiased;
     font-feature-settings: 'cv11', 'ss01';
     line-height: 1.5;
-    background-image: radial-gradient(ellipse 80% 45% at 50% -20%, hsl(var(--primary) / 0.06), transparent);
-    background-attachment: fixed;
   }
 
-  h1, h2, h3, h4, h5, h6 { line-height: 1.15; }
+  h1, h2, h3, h4, h5, h6 { line-height: 1.1; }
 
-  ::selection { background-color: hsl(var(--primary) / 0.2); }
+  ::selection { background-color: hsl(var(--coral) / 0.35); }
 }
 
 @layer components {
+  /* Tactile surface — thin border, soft flat shadow, no gradient */
   .premium-card {
-    @apply rounded-2xl border border-border/80 bg-card text-card-foreground;
+    @apply rounded-[var(--radius)] border border-border bg-card text-card-foreground;
     box-shadow: var(--shadow-sm);
     transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
   }
@@ -125,21 +176,28 @@
     animation: shimmer 1.6s infinite;
   }
 
+  /* Legacy gradient utilities are now SOLID — the redesign bans gradient
+     text/fills, but these class names are still referenced in a few
+     places, so they resolve to flat ink / flat surfaces. */
   .text-gradient, .ai-gradient-text {
-    background: linear-gradient(120deg, hsl(var(--primary)), hsl(var(--secondary)));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: hsl(var(--primary));
+    -webkit-text-fill-color: currentColor;
+    background: none;
   }
 
-  .ai-gradient-bg { background: linear-gradient(135deg, hsl(var(--primary) / 0.13), hsl(var(--secondary) / 0.12)); }
+  .ai-gradient-bg { background-color: hsl(var(--accent)); }
 
+  /* Editorial hairline grid — used behind hero as texture, not decoration */
   .bg-grid-pattern {
-    background-image: linear-gradient(hsl(var(--border) / 0.45) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--border) / 0.45) 1px, transparent 1px);
+    background-image: linear-gradient(hsl(var(--border) / 0.5) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--border) / 0.5) 1px, transparent 1px);
     background-size: 32px 32px;
   }
 
   .focus-ring { @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background; }
+
+  /* Magnetic / arrow micro-interaction helper for CTAs */
+  .cta-arrow { transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1); }
+  .group:hover .cta-arrow { transform: translateX(3px); }
 }
 
 @media (prefers-reduced-motion: reduce) {
