@@ -68,6 +68,22 @@ export default {
           DEFAULT: 'hsl(var(--lavender))',
           foreground: 'hsl(var(--lavender-foreground))',
         },
+        teal: {
+          DEFAULT: 'hsl(var(--teal))',
+          foreground: 'hsl(var(--teal-foreground))',
+        },
+        rust: {
+          DEFAULT: 'hsl(var(--rust))',
+          foreground: 'hsl(var(--rust-foreground))',
+        },
+        ink: {
+          DEFAULT: 'hsl(var(--ink))',
+          foreground: 'hsl(var(--ink-foreground))',
+        },
+        paper: {
+          DEFAULT: 'hsl(var(--paper))',
+          foreground: 'hsl(var(--paper-foreground))',
+        },
         card: {
           DEFAULT: 'hsl(var(--card))',
           foreground: 'hsl(var(--card-foreground))',

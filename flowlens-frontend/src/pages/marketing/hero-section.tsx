@@ -1,9 +1,10 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, MousePointer2 } from 'lucide-react';
+import { Suspense } from 'react';
 import { Button } from '@/components/ui/button';
-import { HeroScene } from './hero-scene';
 import { Magnetic, WordsReveal } from '@/lib/motion';
+import { Journey3D, HeroSceneFallback } from '@/components/three/journey-3d';
 
 export function HeroSection() {
   return (
@@ -17,16 +18,14 @@ export function HeroSection() {
             transition={{ duration: 0.5 }}
             className="mb-6 inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1.5 text-xs font-medium text-muted-foreground"
           >
-            <span className="h-1.5 w-1.5 rounded-full bg-coral" />
-            Friction analytics for people who&apos;ve had enough
+            <span className="h-1.5 w-1.5 rounded-full bg-secondary" />
+            AI-powered user friction analytics
           </motion.div>
 
           <h1 className="font-display text-[2.75rem] font-bold leading-[1.02] tracking-[-0.02em] text-foreground sm:text-6xl lg:text-[4.25rem]">
-            <WordsReveal text="Find out what's" />
+            <WordsReveal text="See where your" />
             <br />
-            <WordsReveal text="actually slowing" delay={0.18} />
-            <br />
-            <WordsReveal text="you down." delay={0.36} highlight="down" />
+            <WordsReveal text="users get stuck." delay={0.18} highlight="stuck." />
           </h1>
 
           <motion.p
@@ -35,8 +34,8 @@ export function HeroSection() {
             transition={{ duration: 0.5, delay: 0.6 }}
             className="mt-6 max-w-md text-pretty text-lg leading-relaxed text-muted-foreground"
           >
-            FlowLens captures the small frustrations that quietly eat your week — slow tools,
-            dead-end meetings, endless waiting — then shows you exactly what to fix first.
+            FlowLens uses AI-powered behavior analysis to uncover friction, hesitation,
+            and drop-offs across the user journey.
           </motion.p>
 
           <motion.div
@@ -48,28 +47,52 @@ export function HeroSection() {
             <Magnetic>
               <Button size="lg" className="group" asChild>
                 <Link to="/register">
-                  Start free <ArrowRight className="h-4 w-4 cta-arrow" />
+                  Get Started <ArrowRight className="h-4 w-4 cta-arrow" />
                 </Link>
               </Button>
             </Magnetic>
             <Button size="lg" variant="outline" asChild>
-              <a href="#how-it-works">See how it works</a>
+              <Link to="/dashboard">Explore Demo</Link>
             </Button>
           </motion.div>
 
-          <motion.p
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.9 }}
-            className="mt-5 text-xs text-muted-foreground"
+            transition={{ duration: 0.5, delay: 0.85 }}
+            className="mt-5 flex items-center gap-2 text-xs text-muted-foreground"
           >
-            Free to start · No credit card · Your first AI report is on us
-          </motion.p>
+            <MousePointer2 className="h-3.5 w-3.5" />
+            <span>Move your mouse to explore the journey</span>
+          </motion.div>
         </div>
 
-        {/* Scene column */}
-        <div className="relative">
-          <HeroScene mood="frustrated" />
+        {/* 3D Scene column */}
+        <div className="relative h-[320px] sm:h-[420px] lg:h-[500px]">
+          <Suspense fallback={<HeroSceneFallback />}>
+            <Journey3D />
+          </Suspense>
+
+          {/* Legend overlay */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 1 }}
+            className="absolute bottom-4 left-4 flex flex-col gap-2 rounded-xl border border-border bg-card/90 px-4 py-3 text-xs shadow-sm backdrop-blur-sm"
+          >
+            <div className="flex items-center gap-2">
+              <span className="h-2.5 w-2.5 rounded-full bg-secondary" />
+              <span className="text-muted-foreground">Smooth flow</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="h-2.5 w-2.5 rounded-full bg-primary" />
+              <span className="text-muted-foreground">Friction point</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="h-2.5 w-2.5 rounded-full bg-muted-foreground" />
+              <span className="text-muted-foreground">Journey stage</span>
+            </div>
+          </motion.div>
         </div>
       </div>
     </section>

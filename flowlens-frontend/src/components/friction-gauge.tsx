@@ -25,7 +25,7 @@ export function FrictionGauge({ score, size = 'md' }: FrictionGaugeProps) {
   const filledLength = (angle / 180) * circumference;
 
   const tier = score !== null ? frictionTier(score) : 'low';
-  const color = tier === 'high' ? 'hsl(var(--destructive))' : tier === 'medium' ? 'hsl(var(--warning))' : 'hsl(var(--success))';
+  const color = tier === 'high' ? 'hsl(var(--rust))' : tier === 'medium' ? 'hsl(var(--muted-foreground))' : 'hsl(var(--teal))';
 
   // Needle rotation: -90deg (left) to +90deg (right)
   const needleRotation = score !== null ? -90 + angle : -90;
@@ -126,7 +126,7 @@ export function FrictionGauge({ score, size = 'md' }: FrictionGaugeProps) {
         >
           {score !== null ? score.toFixed(1) : '—'}
         </motion.p>
-        <p className={cn('text-xs font-medium', tier === 'high' ? 'text-destructive' : tier === 'medium' ? 'text-warning' : 'text-success')}>
+        <p className={cn('text-xs font-medium', tier === 'high' ? 'text-primary' : tier === 'medium' ? 'text-muted-foreground' : 'text-secondary')}>
           {label}
         </p>
       </div>

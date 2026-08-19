@@ -88,14 +88,14 @@ export function PricingSection({ id }: { id?: string }) {
               className={cn(
                 'relative flex h-full flex-col overflow-hidden rounded-[1.25rem] p-6 transition-all duration-300 hover:-translate-y-1',
                 tier.highlighted
-                  ? 'border-2 border-coral bg-card shadow-[var(--shadow-lg)] hover:shadow-[var(--shadow-xl)]'
-                  : 'border border-border bg-card hover:border-coral/40 hover:shadow-[var(--shadow-md)]',
+                  ? 'border-2 border-primary bg-card shadow-[var(--shadow-lg)] hover:shadow-[var(--shadow-xl)]'
+                  : 'border border-border bg-card hover:border-primary/40 hover:shadow-[var(--shadow-md)]',
               )}
             >
               {tier.highlighted && (
                 <>
-                  <span className="absolute inset-x-0 top-0 h-1.5 bg-coral" />
-                  <span className="absolute right-4 top-4 rounded-full bg-coral px-3 py-1 text-xs font-semibold text-coral-foreground">
+                  <span className="absolute inset-x-0 top-0 h-1.5 bg-primary" />
+                  <span className="absolute right-4 top-4 rounded-full bg-primary px-3 py-1 text-xs font-semibold text-primary-foreground">
                     Most popular
                   </span>
                 </>

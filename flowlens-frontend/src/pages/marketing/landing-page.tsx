@@ -5,9 +5,15 @@ import {
   ProblemSection,
   HowItWorksSection,
   FrictionGaugeSection,
-  AIReportsSection,
+  JourneyAnalyticsSection,
+  AIInsightsSection,
   DashboardPreviewSection,
+  FeaturesSection,
+  JourneyAnalyticsSection,
+  AIInsightsSection,
   FinalCtaSection,
+  FeaturesSection,
+  AIReportsSection,
 } from './landing-sections';
 import { PricingSection } from './pricing-section';
 
@@ -20,9 +26,15 @@ export function LandingPage() {
         <ProblemSection />
         <HowItWorksSection />
         <FrictionGaugeSection />
-        <AIReportsSection />
+        <JourneyAnalyticsSection />
+        <AIInsightsSection />
         <DashboardPreviewSection />
+        <FeaturesSection />
+        <JourneyAnalyticsSection />
+        <AIInsightsSection />
         <PricingSection id="pricing" />
+        <FeaturesSection />
+        <AIReportsSection />
         <FinalCtaSection />
       </main>
       <MarketingFooter />

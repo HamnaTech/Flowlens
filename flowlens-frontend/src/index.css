@@ -1,125 +1,141 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    /* ---- Editorial pastel system ------------------------------------
-       Warm paper background, pure-white surfaces, near-black ink, and a
-       small family of SOLID pastel accents (peach, coral, sage, mint,
-       butter, powder, lavender). No gradients — depth comes from
-       layering, borders and soft shadows. */
-    --background: 45 24% 96%;          /* #F8F7F3 warm paper */
-    --foreground: 0 0% 9%;             /* #171717 ink */
-    --card: 0 0% 100%;                 /* #FFFFFF surface */
+    /* ---- FlowLens editorial system ------------------------------------
+       White + off-white + light paper + ink, with teal and rust as
+       meaningful data/interaction colors. No gradients — depth comes
+       from layering, borders and soft shadows. */
+    --background: 0 0% 100%;            /* #FFFFFF */
+    --foreground: 0 0% 9%;              /* #16181A */
+    --card: 0 0% 100%;                  /* #FFFFFF surface */
     --card-foreground: 0 0% 9%;
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 9%;
 
-    --primary: 13 73% 68%;             /* #E98A70 coral */
-    --primary-foreground: 20 20% 12%;  /* dark ink for legibility on pastel */
-    --secondary: 150 20% 34%;          /* deep sage-green ink accent */
-    --secondary-foreground: 45 24% 97%;
+    --primary: 12 70% 49%;              /* #D14A2D rust */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 170 39% 31%;           /* #2F6F62 teal */
+    --secondary-foreground: 0 0% 100%;
 
-    --muted: 42 16% 91%;               /* soft warm gray */
-    --muted-foreground: 60 3% 41%;     /* #6B6B67 secondary text */
-    --accent: 42 22% 89%;              /* hover / subtle surface */
+    --muted: 0 0% 97%;                  /* #F7F7F4 off-white */
+    --muted-foreground: 0 0% 56%;       /* #8A8F94 muted text */
+    --accent: 40 6% 94%;                /* #F1EFEA paper */
     --accent-foreground: 0 0% 9%;
 
-    --destructive: 6 58% 52%;          /* clear red, distinct from coral */
-    --destructive-foreground: 45 24% 97%;
-    --success: 150 30% 38%;
-    --success-foreground: 45 24% 97%;
-    --warning: 40 62% 52%;
-    --warning-foreground: 20 20% 12%;
+    --destructive: 12 70% 49%;          /* rust — same as primary */
+    --destructive-foreground: 0 0% 100%;
+    --success: 170 39% 31%;            /* teal — same as secondary */
+    --success-foreground: 0 0% 100%;
+    --warning: 40 88% 52%;
+    --warning-foreground: 0 0% 9%;
 
-    --border: 40 14% 85%;
-    --input: 40 14% 80%;
-    --ring: 13 73% 68%;
+    --border: 0 0% 90%;                 /* #E6E6E3 */
+    --input: 0 0% 87%;
+    --ring: 12 70% 49%;
 
-    /* Named solid pastels — used directly across the app */
-    --peach: 14 78% 79%;               /* #F3B39F */
-    --peach-foreground: 20 25% 16%;
-    --coral: 13 73% 68%;               /* #E98A70 */
-    --coral-foreground: 20 25% 14%;
-    --sage: 134 18% 76%;               /* #B8CDBD */
-    --sage-foreground: 150 22% 18%;
-    --mint: 153 26% 82%;               /* #C7DDD3 */
-    --mint-foreground: 153 24% 16%;
-    --butter: 51 55% 80%;              /* #E8DFAF */
-    --butter-foreground: 42 40% 18%;
-    --powder: 210 41% 85%;             /* #C8D8E8 */
-    --powder-foreground: 212 34% 20%;
-    --lavender: 260 33% 86%;           /* #D8D0E8 — used sparingly */
-    --lavender-foreground: 260 24% 22%;
+    /* Named solid colors — used directly across the app */
+    --teal: 170 39% 31%;                /* #2F6F62 */
+    --teal-foreground: 0 0% 100%;
+    --rust: 12 70% 49%;                 /* #D14A2D */
+    --rust-foreground: 0 0% 100%;
+    --ink: 0 0% 9%;                     /* #16181A */
+    --ink-foreground: 0 0% 100%;
+    --paper: 40 6% 94%;                 /* #F1EFEA */
+    --paper-foreground: 0 0% 9%;
 
-    /* Legacy alias kept so existing references stay valid */
-    --accent-peach: 14 78% 79%;
-    --accent-peach-foreground: 20 25% 16%;
+    /* Legacy aliases kept so existing references stay valid */
+    --peach: 12 70% 49%;
+    --peach-foreground: 0 0% 100%;
+    --coral: 12 70% 49%;
+    --coral-foreground: 0 0% 100%;
+    --sage: 170 39% 31%;
+    --sage-foreground: 0 0% 100%;
+    --mint: 170 39% 31%;
+    --mint-foreground: 0 0% 100%;
+    --butter: 40 88% 52%;
+    --butter-foreground: 0 0% 9%;
+    --powder: 0 0% 87%;
+    --powder-foreground: 0 0% 9%;
+    --lavender: 0 0% 87%;
+    --lavender-foreground: 0 0% 9%;
+    --accent-peach: 12 70% 49%;
+    --accent-peach-foreground: 0 0% 100%;
 
-    --radius: 0.9rem;
-    --shadow-sm: 0 1px 2px rgb(23 23 23 / 0.05);
-    --shadow-md: 0 8px 24px -14px rgb(23 23 23 / 0.20), 0 2px 5px rgb(23 23 23 / 0.05);
-    --shadow-lg: 0 18px 44px -22px rgb(23 23 23 / 0.24), 0 5px 12px rgb(23 23 23 / 0.06);
-    --shadow-xl: 0 30px 64px -28px rgb(23 23 23 / 0.30), 0 10px 20px rgb(23 23 23 / 0.08);
-    /* Retained token names (referenced elsewhere) — now flat soft shadows, no neon glow */
-    --shadow-glow-teal: 0 6px 18px -10px rgb(58 92 74 / 0.35);
-    --shadow-glow-rust: 0 6px 18px -10px rgb(210 108 82 / 0.40);
+    --radius: 0.75rem;
+    --shadow-sm: 0 1px 2px rgb(23 24 26 / 0.04);
+    --shadow-md: 0 4px 16px -8px rgb(23 24 26 / 0.12), 0 1px 3px rgb(23 24 26 / 0.04);
+    --shadow-lg: 0 12px 32px -16px rgb(23 24 26 / 0.16), 0 3px 8px rgb(23 24 26 / 0.05);
+    --shadow-xl: 0 24px 48px -20px rgb(23 24 26 / 0.20), 0 6px 14px rgb(23 24 26 / 0.06);
+    --shadow-glow-teal: 0 4px 14px -8px rgb(47 111 98 / 0.30);
+    --shadow-glow-rust: 0 4px 14px -8px rgb(209 74 45 / 0.35);
   }
 
   .dark {
-    --background: 30 8% 10%;           /* warm charcoal */
-    --foreground: 44 22% 92%;
-    --card: 30 7% 13%;
-    --card-foreground: 44 22% 92%;
-    --popover: 30 7% 13%;
-    --popover-foreground: 44 22% 92%;
+    --background: 0 0% 7%;
+    --foreground: 0 0% 93%;
+    --card: 0 0% 10%;
+    --card-foreground: 0 0% 93%;
+    --popover: 0 0% 10%;
+    --popover-foreground: 0 0% 93%;
 
-    --primary: 13 66% 66%;
-    --primary-foreground: 20 25% 10%;
-    --secondary: 150 22% 62%;
-    --secondary-foreground: 30 8% 10%;
+    --primary: 12 64% 55%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 170 34% 45%;
+    --secondary-foreground: 0 0% 100%;
 
-    --muted: 30 6% 18%;
-    --muted-foreground: 42 10% 66%;
-    --accent: 30 6% 20%;
-    --accent-foreground: 44 22% 92%;
+    --muted: 0 0% 14%;
+    --muted-foreground: 0 0% 62%;
+    --accent: 0 0% 16%;
+    --accent-foreground: 0 0% 93%;
 
-    --destructive: 6 58% 60%;
-    --destructive-foreground: 30 8% 10%;
-    --success: 150 30% 58%;
-    --success-foreground: 30 8% 10%;
-    --warning: 40 60% 62%;
-    --warning-foreground: 20 25% 10%;
+    --destructive: 12 64% 55%;
+    --destructive-foreground: 0 0% 100%;
+    --success: 170 34% 45%;
+    --success-foreground: 0 0% 100%;
+    --warning: 40 80% 58%;
+    --warning-foreground: 0 0% 9%;
 
-    --border: 30 6% 24%;
-    --input: 30 6% 28%;
-    --ring: 13 66% 66%;
+    --border: 0 0% 20%;
+    --input: 0 0% 24%;
+    --ring: 12 64% 55%;
 
-    --peach: 14 46% 62%;
-    --peach-foreground: 30 20% 12%;
-    --coral: 13 60% 64%;
-    --coral-foreground: 30 20% 10%;
-    --sage: 134 20% 58%;
-    --sage-foreground: 150 24% 12%;
-    --mint: 153 22% 62%;
-    --mint-foreground: 153 24% 12%;
-    --butter: 51 40% 64%;
-    --butter-foreground: 42 40% 12%;
-    --powder: 210 32% 66%;
-    --powder-foreground: 212 34% 14%;
-    --lavender: 260 26% 70%;
-    --lavender-foreground: 260 24% 14%;
+    --teal: 170 34% 45%;
+    --teal-foreground: 0 0% 100%;
+    --rust: 12 64% 55%;
+    --rust-foreground: 0 0% 100%;
+    --ink: 0 0% 93%;
+    --ink-foreground: 0 0% 7%;
+    --paper: 0 0% 16%;
+    --paper-foreground: 0 0% 93%;
 
-    --accent-peach: 14 46% 62%;
-    --accent-peach-foreground: 30 20% 12%;
+    --peach: 12 64% 55%;
+    --peach-foreground: 0 0% 100%;
+    --coral: 12 64% 55%;
+    --coral-foreground: 0 0% 100%;
+    --sage: 170 34% 45%;
+    --sage-foreground: 0 0% 100%;
+    --mint: 170 34% 45%;
+    --mint-foreground: 0 0% 100%;
+    --butter: 40 80% 58%;
+    --butter-foreground: 0 0% 9%;
+    --powder: 0 0% 24%;
+    --powder-foreground: 0 0% 93%;
+    --lavender: 0 0% 24%;
+    --lavender-foreground: 0 0% 93%;
+    --accent-peach: 12 64% 55%;
+    --accent-peach-foreground: 0 0% 100%;
 
     --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.30);
-    --shadow-md: 0 8px 24px -14px rgb(0 0 0 / 0.60), 0 2px 5px rgb(0 0 0 / 0.24);
-    --shadow-lg: 0 18px 44px -22px rgb(0 0 0 / 0.68), 0 5px 12px rgb(0 0 0 / 0.28);
-    --shadow-xl: 0 30px 64px -28px rgb(0 0 0 / 0.78), 0 10px 20px rgb(0 0 0 / 0.34);
-    --shadow-glow-teal: 0 6px 18px -10px rgb(0 0 0 / 0.5);
-    --shadow-glow-rust: 0 6px 18px -10px rgb(0 0 0 / 0.5);
+    --shadow-md: 0 4px 16px -8px rgb(0 0 0 / 0.50), 0 1px 3px rgb(0 0 0 / 0.20);
+    --shadow-lg: 0 12px 32px -16px rgb(0 0 0 / 0.60), 0 3px 8px rgb(0 0 0 / 0.24);
+    --shadow-xl: 0 24px 48px -20px rgb(0 0 0 / 0.70), 0 6px 14px rgb(0 0 0 / 0.28);
+    --shadow-glow-teal: 0 4px 14px -8px rgb(0 0 0 / 0.4);
+    --shadow-glow-rust: 0 4px 14px -8px rgb(0 0 0 / 0.4);
   }
 
   * { @apply border-border; }
@@ -134,11 +150,10 @@
 
   h1, h2, h3, h4, h5, h6 { line-height: 1.1; }
 
-  ::selection { background-color: hsl(var(--coral) / 0.35); }
+  ::selection { background-color: hsl(var(--rust) / 0.20); }
 }
 
 @layer components {
-  /* Tactile surface — thin border, soft flat shadow, no gradient */
   .premium-card {
     @apply rounded-[var(--radius)] border border-border bg-card text-card-foreground;
     box-shadow: var(--shadow-sm);
@@ -176,9 +191,6 @@
     animation: shimmer 1.6s infinite;
   }
 
-  /* Legacy gradient utilities are now SOLID — the redesign bans gradient
-     text/fills, but these class names are still referenced in a few
-     places, so they resolve to flat ink / flat surfaces. */
   .text-gradient, .ai-gradient-text {
     color: hsl(var(--primary));
     -webkit-text-fill-color: currentColor;
@@ -187,7 +199,6 @@
 
   .ai-gradient-bg { background-color: hsl(var(--accent)); }
 
-  /* Editorial hairline grid — used behind hero as texture, not decoration */
   .bg-grid-pattern {
     background-image: linear-gradient(hsl(var(--border) / 0.5) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--border) / 0.5) 1px, transparent 1px);
     background-size: 32px 32px;
@@ -195,7 +206,6 @@
 
   .focus-ring { @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background; }
 
-  /* Magnetic / arrow micro-interaction helper for CTAs */
   .cta-arrow { transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1); }
   .group:hover .cta-arrow { transform: translateX(3px); }
 }

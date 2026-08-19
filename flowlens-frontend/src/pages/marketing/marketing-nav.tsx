@@ -8,7 +8,7 @@ function NavLink({ href, children }: { href: string; children: React.ReactNode }
   return (
     <a href={href} className="group relative py-1 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
       {children}
-      <span className="absolute -bottom-0.5 left-0 h-px w-0 bg-primary transition-all duration-300 group-hover:w-full" />
+      <span className="absolute -bottom-0.5 left-0 h-px w-0 bg-secondary transition-all duration-300 group-hover:w-full" />
     </a>
   );
 }
@@ -26,19 +26,18 @@ export function MarketingNav() {
           <Logo />
         </Link>
         <nav className="hidden items-center gap-8 sm:flex">
-          <NavLink href="#how-it-works">How it works</NavLink>
-          <Link to="/pricing" className="group relative py-1 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
-            Pricing
-            <span className="absolute -bottom-0.5 left-0 h-px w-0 bg-primary transition-all duration-300 group-hover:w-full" />
-          </Link>
+          <NavLink href="#product">Product</NavLink>
+          <NavLink href="#features">Features</NavLink>
+          <NavLink href="#how-it-works">How It Works</NavLink>
+          <NavLink href="#insights">Insights</NavLink>
         </nav>
         <div className="flex items-center gap-2">
           <Button variant="ghost" asChild>
-            <Link to="/login">Log in</Link>
+            <Link to="/login">Login</Link>
           </Button>
           <Magnetic>
             <Button asChild>
-              <Link to="/register">Start free</Link>
+              <Link to="/register">Get Started</Link>
             </Button>
           </Magnetic>
         </div>
