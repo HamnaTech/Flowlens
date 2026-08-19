@@ -9,11 +9,8 @@ import {
   AIInsightsSection,
   DashboardPreviewSection,
   FeaturesSection,
-  JourneyAnalyticsSection,
-  AIInsightsSection,
-  FinalCtaSection,
-  FeaturesSection,
   AIReportsSection,
+  FinalCtaSection,
 } from './landing-sections';
 import { PricingSection } from './pricing-section';
 
@@ -30,11 +27,8 @@ export function LandingPage() {
         <AIInsightsSection />
         <DashboardPreviewSection />
         <FeaturesSection />
-        <JourneyAnalyticsSection />
-        <AIInsightsSection />
-        <PricingSection id="pricing" />
-        <FeaturesSection />
         <AIReportsSection />
+        <PricingSection id="pricing" />
         <FinalCtaSection />
       </main>
       <MarketingFooter />
