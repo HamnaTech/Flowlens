@@ -1,22 +1,36 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowRight, MousePointer2 } from 'lucide-react';
-import { Suspense } from 'react';
 import { Button } from '@/components/ui/button';
 import { Magnetic, WordsReveal } from '@/lib/motion';
-import { Journey3D, HeroSceneFallback } from '@/components/three/journey-3d';
 
 export function HeroSection() {
   return (
-    <section className="relative overflow-hidden">
-      <div className="mx-auto grid max-w-6xl items-center gap-12 px-4 pb-16 pt-12 sm:px-6 lg:grid-cols-[1.05fr_1fr] lg:gap-8 lg:pb-24 lg:pt-20">
+    <section className="relative overflow-hidden bg-background">
+      {/* Full-bleed background photo — fills the entire hero area, edge to edge */}
+      <img
+        src="/images/frustrated-worker.jpg"
+        alt=""
+        aria-hidden
+        className="absolute inset-0 h-full w-full object-cover object-center"
+        loading="eager"
+        decoding="async"
+      />
+
+      {/* Soft, mostly-transparent gradient scrims so the photo blends naturally
+          into the section while keeping the headline readable. The photo remains
+          visible across the whole hero — this is a background, not a box. */}
+      <div className="absolute inset-0 bg-gradient-to-r from-background/90 via-background/45 to-background/5" />
+      <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-background to-transparent" />
+
+      <div className="relative z-10 mx-auto grid max-w-6xl items-center gap-12 px-4 pb-16 pt-12 sm:px-6 lg:pb-24 lg:pt-20 lg:grid-cols-[1.05fr_1fr] lg:gap-8">
         {/* Copy column */}
         <div className="relative z-10">
           <motion.div
             initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="mb-6 inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1.5 text-xs font-medium text-muted-foreground"
+            className="mb-6 inline-flex w-fit items-center gap-2 rounded-full border border-border bg-card/90 px-3 py-1.5 text-xs font-medium text-muted-foreground backdrop-blur-sm"
           >
             <span className="h-1.5 w-1.5 rounded-full bg-secondary" />
             AI-powered user friction analytics
@@ -51,7 +65,7 @@ export function HeroSection() {
                 </Link>
               </Button>
             </Magnetic>
-            <Button size="lg" variant="outline" asChild>
+            <Button size="lg" variant="outline" className="bg-background/60 backdrop-blur-sm" asChild>
               <Link to="/dashboard">Explore Demo</Link>
             </Button>
           </motion.div>
@@ -63,35 +77,7 @@ export function HeroSection() {
             className="mt-5 flex items-center gap-2 text-xs text-muted-foreground"
           >
             <MousePointer2 className="h-3.5 w-3.5" />
-            <span>Move your mouse to explore the journey</span>
-          </motion.div>
-        </div>
-
-        {/* 3D Scene column */}
-        <div className="relative h-[320px] sm:h-[420px] lg:h-[500px]">
-          <Suspense fallback={<HeroSceneFallback />}>
-            <Journey3D />
-          </Suspense>
-
-          {/* Legend overlay */}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 1 }}
-            className="absolute bottom-4 left-4 flex flex-col gap-2 rounded-xl border border-border bg-card/90 px-4 py-3 text-xs shadow-sm backdrop-blur-sm"
-          >
-            <div className="flex items-center gap-2">
-              <span className="h-2.5 w-2.5 rounded-full bg-secondary" />
-              <span className="text-muted-foreground">Smooth flow</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="h-2.5 w-2.5 rounded-full bg-primary" />
-              <span className="text-muted-foreground">Friction point</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="h-2.5 w-2.5 rounded-full bg-muted-foreground" />
-              <span className="text-muted-foreground">Journey stage</span>
-            </div>
+            <span>Understand exactly where users hesitate</span>
           </motion.div>
         </div>
       </div>

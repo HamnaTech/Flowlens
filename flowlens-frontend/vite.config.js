@@ -8,18 +8,6 @@ export default defineConfig({
             '@': path.resolve(__dirname, './src'),
         },
     },
-    optimizeDeps: {
-        exclude: ['three'],
-    },
-    build: {
-        rollupOptions: {
-            output: {
-                manualChunks: {
-                    three: ['three', '@react-three/fiber', '@react-three/drei'],
-                },
-            },
-        },
-    },
     server: {
         // Matches CORS_ORIGINS=http://localhost:3000 already set in the
         // backend's .env — keeping this in sync here means zero backend
